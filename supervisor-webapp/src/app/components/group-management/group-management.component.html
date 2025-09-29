@@ -1,0 +1,91 @@
+<div class="group-management-container">
+  <div class="header">
+    <h2>Group Management</h2>
+    <div class="header-actions">
+      <button mat-raised-button color="primary" (click)="createGroup()" class="create-button">
+        Create Group
+      </button>
+      <button mat-icon-button (click)="refreshData()" [disabled]="isLoading" class="refresh-button">
+        <span class="refresh-icon">⟳</span>
+      </button>
+    </div>
+  </div>
+
+  <mat-card class="table-card">
+    <div class="table-container" *ngIf="!isLoading; else loadingTemplate">
+      <mat-table [dataSource]="groups" class="groups-table">
+        
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+          <mat-cell *matCellDef="let group">{{ group.name }}</mat-cell>
+        </ng-container>
+
+        <!-- Location Column -->
+        <ng-container matColumnDef="location">
+          <mat-header-cell *matHeaderCellDef>Location</mat-header-cell>
+          <mat-cell *matCellDef="let group">{{ group.location }}</mat-cell>
+        </ng-container>
+
+        <!-- Phone Number Column -->
+        <ng-container matColumnDef="phoneNumber">
+          <mat-header-cell *matHeaderCellDef>Phone Number</mat-header-cell>
+          <mat-cell *matCellDef="let group">{{ group.phoneNumber }}</mat-cell>
+        </ng-container>
+
+        <!-- Agent Count Column -->
+        <ng-container matColumnDef="agentCount">
+          <mat-header-cell *matHeaderCellDef>Agents</mat-header-cell>
+          <mat-cell *matCellDef="let group">
+            <span class="agent-count">
+              {{ group.statistics.availableAgents }}/{{ group.statistics.totalAgents }}
+            </span>
+            <small> (Available/Total)</small>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Overflow Column -->
+        <ng-container matColumnDef="overflow">
+          <mat-header-cell *matHeaderCellDef>Overflow</mat-header-cell>
+          <mat-cell *matCellDef="let group">
+            <mat-icon [style.color]="group.overflowEnabled ? '#4caf50' : '#9e9e9e'">
+              {{ group.overflowEnabled ? 'check_circle' : 'cancel' }}
+            </mat-icon>
+            <span class="overflow-text">
+              {{ group.overflowEnabled ? 'Enabled' : 'Disabled' }}
+            </span>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+          <mat-cell *matCellDef="let group">
+            <button mat-button (click)="editGroup(group)" matTooltip="Edit Group" color="primary">
+              Edit
+            </button>
+            <button mat-button (click)="deleteGroup(group)" matTooltip="Delete Group" color="warn">
+              Delete
+            </button>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+
+      <div *ngIf="groups.length === 0" class="no-data">
+        <mat-icon>group_off</mat-icon>
+        <p>No groups found</p>
+        <button mat-raised-button color="primary" (click)="createGroup()">Create First Group</button>
+      </div>
+    </div>
+
+    <ng-template #loadingTemplate>
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+        <p>Loading groups...</p>
+      </div>
+    </ng-template>
+  </mat-card>
+</div>

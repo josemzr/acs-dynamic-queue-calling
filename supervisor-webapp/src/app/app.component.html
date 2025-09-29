@@ -1,0 +1,25 @@
+<div class="app-container">
+  <!-- Navigation Header -->
+  <mat-toolbar color="primary" class="navbar">
+    <mat-toolbar-row>
+      <span class="app-title">ACS Dynamic Queue - Supervisor</span>
+      <span class="spacer"></span>
+      <nav class="nav-links">
+        <a mat-button routerLink="/dashboard" routerLinkActive="active-link">
+          Dashboard
+        </a>
+        <a mat-button routerLink="/agents" routerLinkActive="active-link">
+          Agents
+        </a>
+        <a mat-button routerLink="/groups" routerLinkActive="active-link">
+          Groups
+        </a>
+      </nav>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

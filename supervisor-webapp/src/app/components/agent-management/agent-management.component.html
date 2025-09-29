@@ -1,0 +1,89 @@
+<div class="agent-management-container">
+  <div class="header">
+    <h2>Agent Management</h2>
+    <div class="header-actions">
+      <button mat-raised-button color="primary" (click)="createAgent()" class="create-button">
+        Create Agent
+      </button>
+      <button mat-icon-button (click)="refreshData()" [disabled]="isLoading" class="refresh-button">
+        <span class="refresh-icon">⟳</span>
+      </button>
+    </div>
+  </div>
+
+  <mat-card class="table-card">
+    <div class="table-container" *ngIf="!isLoading; else loadingTemplate">
+      <mat-table [dataSource]="agents" class="agents-table">
+        
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+          <mat-cell *matCellDef="let agent">{{ agent.name }}</mat-cell>
+        </ng-container>
+
+        <!-- Email Column -->
+        <ng-container matColumnDef="email">
+          <mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
+          <mat-cell *matCellDef="let agent">{{ agent.email }}</mat-cell>
+        </ng-container>
+
+        <!-- Username Column -->
+        <ng-container matColumnDef="username">
+          <mat-header-cell *matHeaderCellDef>Username</mat-header-cell>
+          <mat-cell *matCellDef="let agent">{{ agent.username }}</mat-cell>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+          <mat-cell *matCellDef="let agent">
+            <span class="status-badge" [style.background-color]="getAgentStatusColor(agent.status)">
+              {{ agent.status | titlecase }}
+            </span>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Groups Column -->
+        <ng-container matColumnDef="groups">
+          <mat-header-cell *matHeaderCellDef>Groups</mat-header-cell>
+          <mat-cell *matCellDef="let agent">
+            <mat-chip-set>
+              <mat-chip *ngFor="let groupId of agent.groupIds">
+                {{ getGroupName(groupId) }}
+              </mat-chip>
+            </mat-chip-set>
+          </mat-cell>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+          <mat-cell *matCellDef="let agent">
+            <button mat-button (click)="editAgent(agent)" matTooltip="Edit Agent" color="primary">
+              Edit
+            </button>
+            <button mat-button (click)="deleteAgent(agent)" matTooltip="Delete Agent" color="warn">
+              Delete
+            </button>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+
+      <div *ngIf="agents.length === 0" class="no-data">
+        <mat-icon>person_off</mat-icon>
+        <p>No agents found</p>
+        <button mat-raised-button color="primary" (click)="createAgent()">Create First Agent</button>
+      </div>
+    </div>
+
+    <ng-template #loadingTemplate>
+      <div class="loading-container">
+        <mat-spinner></mat-spinner>
+        <p>Loading agents...</p>
+      </div>
+    </ng-template>
+  </mat-card>
+</div>

@@ -1,0 +1,31 @@
+{
+  "name": "acs-dynamic-queue-calling",
+  "version": "1.0.0",
+  "description": "Dynamic queue system with Azure Communication Services",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:agent\" \"npm run dev:supervisor\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:agent": "cd agent-webapp && npm start",
+    "dev:supervisor": "cd supervisor-webapp && npm start",
+    "build": "npm run build:backend && npm run build:agent && npm run build:supervisor",
+    "build:backend": "cd backend && npm run build",
+    "build:agent": "cd agent-webapp && npm run build",
+    "build:supervisor": "cd supervisor-webapp && npm run build",
+    "install:all": "npm install && cd backend && npm install && cd ../agent-webapp && npm install && cd ../supervisor-webapp && npm install"
+  },
+  "keywords": [
+    "azure-communication-services",
+    "dynamic-queue",
+    "calling",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "@azure/communication-call-automation": "^1.5.0"
+  }
+}

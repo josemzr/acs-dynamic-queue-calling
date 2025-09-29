@@ -1,0 +1,28 @@
+.agent-form {
+  display: flex;
+  flex-direction: column;
+  min-width: 500px;
+  padding: 20px 0;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+mat-dialog-content {
+  padding: 0 24px 20px 24px;
+  min-height: 300px;
+}
+
+mat-dialog-actions {
+  padding: 0 24px 20px 24px;
+}
+
+.mat-mdc-form-field {
+  font-size: 14px;
+}
+
+.mat-mdc-form-field-hint {
+  font-size: 12px;
+}

@@ -1,0 +1,264 @@
+.call-interface-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  min-height: 400px;
+  position: relative;
+}
+
+.no-call-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6b7280;
+}
+
+.no-call-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.no-call-state h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.5rem;
+  color: #374151;
+}
+
+.no-call-state p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.call-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  border: 3px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.call-card.incoming {
+  border-color: #f59e0b;
+  animation: pulse-border 2s infinite;
+}
+
+.call-card.ringing {
+  border-color: #3b82f6;
+}
+
+.call-card.connected {
+  border-color: #10b981;
+}
+
+@keyframes pulse-border {
+  0%, 100% {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+  }
+  50% {
+    border-color: #fbbf24;
+    box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
+  }
+}
+
+.call-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.caller-info {
+  flex: 1;
+}
+
+.caller-number {
+  margin: 0 0 8px 0;
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.call-status {
+  margin: 0;
+  color: #6b7280;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.call-timer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f3f4f6;
+  padding: 8px 12px;
+  border-radius: 20px;
+}
+
+.timer-icon {
+  font-size: 16px;
+}
+
+.timer-text {
+  font-family: 'Monaco', 'Menlo', monospace;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.call-details {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.detail-item:last-child {
+  margin-bottom: 0;
+}
+
+.detail-label {
+  font-weight: 500;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.detail-value {
+  font-weight: 500;
+  color: #1f2937;
+  font-size: 14px;
+  font-family: 'Monaco', 'Menlo', monospace;
+}
+
+.call-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.answer-button,
+.end-button,
+.mute-button {
+  flex: 1;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.answer-button {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.answer-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.end-button {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+}
+
+.end-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.answer-button:disabled,
+.end-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.incoming-call-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.incoming-animation {
+  position: relative;
+}
+
+.pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 200px;
+  height: 200px;
+  border: 3px solid #f59e0b;
+  border-radius: 50%;
+  animation: pulse-ring-animation 2s ease-out infinite;
+  opacity: 0;
+}
+
+.pulse-ring.delay-1 {
+  animation-delay: 0.5s;
+}
+
+.pulse-ring.delay-2 {
+  animation-delay: 1s;
+}
+
+@keyframes pulse-ring-animation {
+  0% {
+    transform: translate(-50%, -50%) scale(0.1);
+    opacity: 1;
+  }
+  80%, 100% {
+    transform: translate(-50%, -50%) scale(1.2);
+    opacity: 0;
+  }
+}
+
+/* Mute button specific styles */
+.mute-button.muted {
+  background: #ef4444;
+  color: white;
+}
+
+.mute-button.muted:hover:not(:disabled) {
+  background: #dc2626;
+  transform: translateY(-2px);
+}
+
+.mute-button.unmuted {
+  background: #10b981;
+  color: white;
+}
+
+.mute-button.unmuted:hover:not(:disabled) {
+  background: #059669;
+  transform: translateY(-2px);
+}

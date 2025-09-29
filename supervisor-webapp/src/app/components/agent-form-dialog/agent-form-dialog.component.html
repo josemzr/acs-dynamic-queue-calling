@@ -1,0 +1,76 @@
+<h2 mat-dialog-title>{{ getFormTitle() }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="agentForm" class="agent-form">
+    
+    <!-- Name Field -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" placeholder="Enter agent's full name">
+      <mat-error *ngIf="hasError('name', 'required')">
+        Name is required
+      </mat-error>
+      <mat-error *ngIf="hasError('name', 'minlength')">
+        Name must be at least 2 characters
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Email Field -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" type="email" placeholder="Enter email address">
+      <mat-error *ngIf="hasError('email', 'required')">
+        Email is required
+      </mat-error>
+      <mat-error *ngIf="hasError('email', 'email')">
+        Please enter a valid email address
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Username Field -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Username</mat-label>
+      <input matInput formControlName="username" placeholder="Enter username for login">
+      <mat-error *ngIf="hasError('username', 'required')">
+        Username is required
+      </mat-error>
+      <mat-error *ngIf="hasError('username', 'minlength')">
+        Username must be at least 3 characters
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Password Field -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>{{ getPasswordLabel() }}</mat-label>
+      <input matInput formControlName="password" type="password" 
+             [placeholder]="isEditMode ? 'Enter new password or leave blank' : 'Enter password'">
+      <mat-error *ngIf="hasError('password', 'required')">
+        Password is required
+      </mat-error>
+      <mat-error *ngIf="hasError('password', 'minlength')">
+        Password must be at least 6 characters
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Groups Field -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Groups</mat-label>
+      <mat-select formControlName="groupIds" multiple>
+        <mat-option *ngFor="let group of data.groups" [value]="group.id">
+          {{ group.name }} ({{ group.location }})
+        </mat-option>
+      </mat-select>
+      <mat-hint>Select one or more groups for this agent</mat-hint>
+    </mat-form-field>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" 
+          [disabled]="!agentForm.valid" 
+          (click)="onSubmit()">
+    {{ getSubmitButtonText() }}
+  </button>
+</mat-dialog-actions>

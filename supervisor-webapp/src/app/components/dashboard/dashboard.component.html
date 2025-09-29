@@ -1,0 +1,244 @@
+<div class="dashboard-container">
+  <!-- Header -->
+  <mat-toolbar color="primary">
+    <span>ACS Dynamic Queue - Supervisor Dashboard</span>
+    <span class="spacer"></span>
+    <span class="connection-status" [ngClass]="{'connected': isConnected, 'disconnected': !isConnected}">
+      {{ isConnected ? '● Connected' : '● Disconnected' }}
+    </span>
+    <button mat-icon-button (click)="refreshData()" [disabled]="isLoading" class="refresh-button">
+      <span class="refresh-icon">⟳</span>
+    </button>
+  </mat-toolbar>
+
+  <div class="dashboard-content" *ngIf="!isLoading; else loadingTemplate">
+    <!-- Statistics Cards -->
+    <div class="stats-grid">
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <mat-card-title>Total Agents</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-value">{{ dashboardData.totalAgents }}</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <mat-card-title>Available Agents</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-value available">{{ dashboardData.availableAgents }}</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <mat-card-title>Busy Agents</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-value busy">{{ dashboardData.busyAgents }}</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <mat-card-title>Active Calls</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-value calls">{{ dashboardData.activeCalls }}</div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="stat-card">
+        <mat-card-header>
+          <mat-card-title>Total Groups</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="stat-value">{{ dashboardData.totalGroups }}</div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <!-- Main Content Tabs -->
+    <mat-card class="main-content">
+      <mat-tab-group>
+        <!-- Agents Tab -->
+        <mat-tab label="Agents">
+          <ng-template mat-tab-label>
+            <span>Agents</span>
+            <span class="tab-badge" *ngIf="agents.length > 0">({{ agents.length }})</span>
+          </ng-template>
+          <div class="tab-content">
+            <div class="table-container">
+              <mat-table [dataSource]="agents" class="agents-table">
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                  <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+                  <mat-cell *matCellDef="let agent">{{ agent.name }}</mat-cell>
+                </ng-container>
+
+                <!-- Email Column -->
+                <ng-container matColumnDef="email">
+                  <mat-header-cell *matHeaderCellDef>Email</mat-header-cell>
+                  <mat-cell *matCellDef="let agent">{{ agent.email }}</mat-cell>
+                </ng-container>
+
+                <!-- Status Column -->
+                <ng-container matColumnDef="status">
+                  <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                  <mat-cell *matCellDef="let agent">
+                    <span class="status-badge" [style.background-color]="getAgentStatusColor(agent.status)">
+                      {{ agent.status | titlecase }}
+                    </span>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Groups Column -->
+                <ng-container matColumnDef="groups">
+                  <mat-header-cell *matHeaderCellDef>Groups</mat-header-cell>
+                  <mat-cell *matCellDef="let agent">
+                    <mat-chip-set>
+                      <mat-chip *ngFor="let groupId of agent.groupIds">
+                        {{ getGroupName(groupId) }}
+                      </mat-chip>
+                    </mat-chip-set>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Statistics Column -->
+                <ng-container matColumnDef="statistics">
+                  <mat-header-cell *matHeaderCellDef>Today's Calls</mat-header-cell>
+                  <mat-cell *matCellDef="let agent">{{ agent.statistics.callsToday }}</mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="['name', 'email', 'status', 'groups', 'statistics']"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: ['name', 'email', 'status', 'groups', 'statistics'];"></mat-row>
+              </mat-table>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Groups Tab -->
+        <mat-tab label="Groups">
+          <ng-template mat-tab-label>
+            <span>Groups</span>
+            <span class="tab-badge" *ngIf="groups.length > 0">({{ groups.length }})</span>
+          </ng-template>
+          <div class="tab-content">
+            <div class="table-container">
+              <mat-table [dataSource]="groups" class="groups-table">
+                <!-- Name Column -->
+                <ng-container matColumnDef="name">
+                  <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+                  <mat-cell *matCellDef="let group">{{ group.name }}</mat-cell>
+                </ng-container>
+
+                <!-- Location Column -->
+                <ng-container matColumnDef="location">
+                  <mat-header-cell *matHeaderCellDef>Location</mat-header-cell>
+                  <mat-cell *matCellDef="let group">{{ group.location }}</mat-cell>
+                </ng-container>
+
+                <!-- Phone Number Column -->
+                <ng-container matColumnDef="phoneNumber">
+                  <mat-header-cell *matHeaderCellDef>Phone Number</mat-header-cell>
+                  <mat-cell *matCellDef="let group">{{ group.phoneNumber }}</mat-cell>
+                </ng-container>
+
+                <!-- Agents Count Column -->
+                <ng-container matColumnDef="agentCount">
+                  <mat-header-cell *matHeaderCellDef>Agents</mat-header-cell>
+                  <mat-cell *matCellDef="let group">
+                    <span class="agent-count">
+                      {{ group.statistics.availableAgents }}/{{ group.statistics.totalAgents }}
+                    </span>
+                    <small> (Available/Total)</small>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Overflow Column -->
+                <ng-container matColumnDef="overflow">
+                  <mat-header-cell *matHeaderCellDef>Overflow</mat-header-cell>
+                  <mat-cell *matCellDef="let group">
+                    <mat-icon [style.color]="group.overflowEnabled ? '#4caf50' : '#9e9e9e'">
+                      {{ group.overflowEnabled ? 'check_circle' : 'cancel' }}
+                    </mat-icon>
+                  </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="['name', 'location', 'phoneNumber', 'agentCount', 'overflow']"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: ['name', 'location', 'phoneNumber', 'agentCount', 'overflow'];"></mat-row>
+              </mat-table>
+            </div>
+          </div>
+        </mat-tab>
+
+        <!-- Active Calls Tab -->
+        <mat-tab label="Active Calls">
+          <ng-template mat-tab-label>
+            <span>Active Calls</span>
+            <span class="tab-badge" *ngIf="activeCalls.length > 0">({{ activeCalls.length }})</span>
+          </ng-template>
+          <div class="tab-content">
+            <div class="table-container" *ngIf="activeCalls.length > 0; else noCallsTemplate">
+              <mat-table [dataSource]="activeCalls" class="calls-table">
+                <!-- Phone Number Column -->
+                <ng-container matColumnDef="phoneNumber">
+                  <mat-header-cell *matHeaderCellDef>Caller</mat-header-cell>
+                  <mat-cell *matCellDef="let call">{{ call.phoneNumber }}</mat-cell>
+                </ng-container>
+
+                <!-- Group Column -->
+                <ng-container matColumnDef="group">
+                  <mat-header-cell *matHeaderCellDef>Group</mat-header-cell>
+                  <mat-cell *matCellDef="let call">{{ getGroupName(call.groupId) }}</mat-cell>
+                </ng-container>
+
+                <!-- Agent Column -->
+                <ng-container matColumnDef="agent">
+                  <mat-header-cell *matHeaderCellDef>Agent</mat-header-cell>
+                  <mat-cell *matCellDef="let call">
+                    {{ call.assignedAgentId ? getAgentName(call.assignedAgentId) : 'Unassigned' }}
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Status Column -->
+                <ng-container matColumnDef="status">
+                  <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                  <mat-cell *matCellDef="let call">
+                    <span class="call-status {{ call.status }}">{{ call.status | titlecase }}</span>
+                  </mat-cell>
+                </ng-container>
+
+                <!-- Start Time Column -->
+                <ng-container matColumnDef="startTime">
+                  <mat-header-cell *matHeaderCellDef>Start Time</mat-header-cell>
+                  <mat-cell *matCellDef="let call">{{ call.startTime | date:'HH:mm:ss' }}</mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="['phoneNumber', 'group', 'agent', 'status', 'startTime']"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: ['phoneNumber', 'group', 'agent', 'status', 'startTime'];"></mat-row>
+              </mat-table>
+            </div>
+
+            <ng-template #noCallsTemplate>
+              <div class="no-data">
+                <mat-icon>phone_disabled</mat-icon>
+                <h3>No Active Calls</h3>
+                <p>All agents are currently available</p>
+              </div>
+            </ng-template>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card>
+  </div>
+
+  <ng-template #loadingTemplate>
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Loading dashboard data...</p>
+    </div>
+  </ng-template>
+</div>

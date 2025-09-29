@@ -1,0 +1,45 @@
+.group-form {
+  display: flex;
+  flex-direction: column;
+  min-width: 500px;
+  padding: 20px 0;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.overflow-section {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+}
+
+.overflow-section h3 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+}
+
+.overflow-checkbox {
+  margin-bottom: 16px;
+}
+
+mat-dialog-content {
+  padding: 0 24px 20px 24px;
+  min-height: 400px;
+}
+
+mat-dialog-actions {
+  padding: 0 24px 20px 24px;
+}
+
+.mat-mdc-form-field {
+  font-size: 14px;
+}
+
+.mat-mdc-form-field-hint {
+  font-size: 12px;
+}

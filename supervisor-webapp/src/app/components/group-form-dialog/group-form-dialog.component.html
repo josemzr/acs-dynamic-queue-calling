@@ -1,0 +1,74 @@
+<h2 mat-dialog-title>{{ getFormTitle() }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="groupForm" class="group-form">
+    
+    <!-- Name Field -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Group Name</mat-label>
+      <input matInput formControlName="name" placeholder="Enter group name">
+      <mat-error *ngIf="hasError('name', 'required')">
+        Group name is required
+      </mat-error>
+      <mat-error *ngIf="hasError('name', 'minlength')">
+        Group name must be at least 2 characters
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Location Field -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Location</mat-label>
+      <input matInput formControlName="location" placeholder="Enter location (e.g., Madrid Office)">
+      <mat-error *ngIf="hasError('location', 'required')">
+        Location is required
+      </mat-error>
+      <mat-error *ngIf="hasError('location', 'minlength')">
+        Location must be at least 2 characters
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Phone Number Field -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Phone Number</mat-label>
+      <input matInput formControlName="phoneNumber" placeholder="Enter phone number (e.g., +34-900-123-456)">
+      <mat-error *ngIf="hasError('phoneNumber', 'required')">
+        Phone number is required
+      </mat-error>
+      <mat-error *ngIf="hasError('phoneNumber', 'pattern')">
+        Please enter a valid phone number
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Overflow Settings -->
+    <div class="overflow-section">
+      <h3>Overflow Settings</h3>
+      
+      <!-- Overflow Enabled Checkbox -->
+      <mat-checkbox formControlName="overflowEnabled" class="overflow-checkbox">
+        Enable overflow to other groups
+      </mat-checkbox>
+
+      <!-- Overflow Groups Selection -->
+      <mat-form-field appearance="outline" class="full-width" 
+                     *ngIf="groupForm.get('overflowEnabled')?.value">
+        <mat-label>Overflow Groups</mat-label>
+        <mat-select formControlName="overflowGroupIds" multiple>
+          <mat-option *ngFor="let group of data.allGroups" [value]="group.id">
+            {{ group.name }} ({{ group.location }})
+          </mat-option>
+        </mat-select>
+        <mat-hint>Select groups to receive overflow calls when this group is busy</mat-hint>
+      </mat-form-field>
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" 
+          [disabled]="!groupForm.valid" 
+          (click)="onSubmit()">
+    {{ getSubmitButtonText() }}
+  </button>
+</mat-dialog-actions>
